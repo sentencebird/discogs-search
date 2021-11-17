@@ -1,7 +1,6 @@
 import streamlit as st
 import tempfile
 from pathlib import Path
-from PIL import Image
 
 import requests
 from bs4 import BeautifulSoup
@@ -24,7 +23,6 @@ uploaded_file = st.file_uploader("Upload an image")
 
 if uploaded_file is not None:
     with tempfile.NamedTemporaryFile(delete=False) as tmp_file:
-        st.markdown("## Original PDF file")
         fp = Path(tmp_file.name)
         fp.write_bytes(uploaded_file.getvalue())
         
