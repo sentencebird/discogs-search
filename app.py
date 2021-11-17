@@ -12,9 +12,13 @@ def get_driver(url, headless=True):
     if headless:
         options = Options()
         options.add_argument('--headless')
-        driver = webdriver.Chrome('./chromedriver', chrome_options=options)
+        options.add_argument('--no-sandbox')
+        options.add_argument("--disable-dev-shm-usage")
+        options.add_argument("--remote-debugging-port=9222")        
+        driver = webdriver.Chrome('chromedriver', chrome_options=options)
     else:
-        driver =  webdriver.Chrome('./chromedriver')
+        driver =  webdriver.Chrome('chromedriver')
+    driver.set_window_size(1920, 1080)
     driver.get(url)    
     return driver
 
@@ -29,8 +33,13 @@ if uploaded_file is not None:
         st.write(tmp_file.name)
         st.image(uploaded_file)
         
+        # TODO: useragent
+        driver = get_driver("https://www.google.com/imghp")        
+        driver.find_element_by_xpath("//div[@aria-label='Search by image']").click()
+        driver.find_element_by_name("encoded_image").send_keys(tmp_file.name)
+        q = driver.find_element_by_name("q").get_attribute("value")
         
-        #driver = get_driver("https://www.google.com/imghp", headless=False)        
+        st.write(q)
         
         
         
