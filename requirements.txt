@@ -1,3 +1,4 @@
 selenium
 beautifulsoup4
-streamlit
+streamlit==0.79.0
+oauth2
