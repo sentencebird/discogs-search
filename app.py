@@ -30,6 +30,19 @@ def get_driver(url, headless=True):
     driver.get(url)    
     return driver
 
+def search_keyword_by_image(file):
+    try:
+        driver = get_driver("https://www.google.com/imghp", headless=True)        
+        driver.find_element_by_xpath("//div[@aria-label='Search by image']").click()
+        driver.find_element_by_name("encoded_image").send_keys(file.name)
+        q = driver.find_element_by_name("q").get_attribute("value")
+        return q
+    except:
+        return ""
+    finally:
+        driver.close()
+    
+
 class Discogs():
     def __init__(self):
         # consumer
@@ -46,7 +59,7 @@ class Discogs():
     def search(self, q, type_="master"):
         res, content = self.client.request(f'{self.base_url}database/search?type={type_}&q={q}', headers={'User-Agent': self.user_agent})
         releases = json.loads(content.decode('utf-8'))
-        return releases['results']
+        return releases['results'] if 'results' in releases else []
         
     def fetch_master(self, master_id):
         res, content = self.client.request(f'{self.base_url}masters/{master_id}', headers={'User-Agent': self.user_agent})
@@ -64,11 +77,7 @@ if uploaded_file is not None:
         
         with st.spinner("検索中..."):
             # TODO: useragent
-            driver = get_driver("https://www.google.com/imghp", headless=True)        
-            driver.find_element_by_xpath("//div[@aria-label='Search by image']").click()
-            driver.find_element_by_name("encoded_image").send_keys(tmp_file.name)
-            q = driver.find_element_by_name("q").get_attribute("value")
-            driver.close()
+            q = search_keyword_by_image(tmp_file)
 
             client = Discogs()
             releases = client.search(q)
