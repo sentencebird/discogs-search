@@ -66,7 +66,9 @@ class Discogs():
         return  json.loads(content.decode('utf-8'))
 
 
-uploaded_file = st.file_uploader("Upload an image")
+st.title("レコード・ジャケットで検索")    
+    
+uploaded_file = st.file_uploader("画像をアップロードしてください")
 
 if uploaded_file is not None:
     with tempfile.NamedTemporaryFile(delete=False) as tmp_file:
